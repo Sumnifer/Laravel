@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Models\Client;
+use Illuminate\Auth\Authenticatable;
 use App\Models\Opportunity;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -60,7 +61,6 @@ class OpportunityController extends Controller
         $validatedData = $request->validate([
             'client_id' => 'required',
             'description' => 'required',
-            'user_id' => 'required',
             'managed_by' => 'required',
             'status' => 'required',
             'type' => 'required',
@@ -70,7 +70,6 @@ class OpportunityController extends Controller
         $opportunity = Opportunity::create([
             'client_id' => $validatedData['client_id'],
             'description' => $validatedData['description'],
-            'user_id' => $validatedData['user_id'],
             'managed_by' => $validatedData['managed_by'],
             'status' => $validatedData['status'],
             'created_by' => auth()->user()->id,
@@ -99,10 +98,14 @@ class OpportunityController extends Controller
         // Récupérer les utilisateurs et le client pour les options de sélection
         $users = User::all();
         $clients = Client::all();
+        $tests = session('error');
+        // Vérifier s'il y a des erreurs dans la session de la requête précédente
+        return view('opportunities.edit', compact('opportunity', 'users', 'clients', 'tests'));
 
-        // Retourner la vue d'édition avec l'opportunité et les options de sélection
-        return view('opportunities.edit', compact('opportunity', 'users', 'clients'));
+
     }
+
+
 
 
     /**
@@ -131,6 +134,9 @@ class OpportunityController extends Controller
         // Redirection vers la page des opportunités avec un message de succès
         return redirect()->route('opportunities.show', $opportunity)->with('success', 'Opportunité mise à jour avec succès.');
     }
+
+
+
 
 
     /**

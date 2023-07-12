@@ -6,13 +6,6 @@
         <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 w-full">
             <div class="bg-white dark:bg-gray-800 overflow-visible shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    @if (session('success'))
-                    <div class="bg-green-200 text-green-800 py-2 px-4 mb-4 rounded">
-                        <i class="fa-solid fa-circle-check"></i>
-                        {{ session('success') }}
-                    </div>
-                    @endif
-
                     <div class="flex justify-between mb-6">
                         <div class="flex gap-2">
                             <details class="relative bg-red w-60 ">
@@ -47,12 +40,18 @@
                                     Nom
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Téléphone
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
                                     Email
                                 </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
                                     Adresse
                                 </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
+                                    Contrat
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
                                     Actions
                                 </th>
                             </tr>
@@ -61,19 +60,33 @@
                             @foreach ($clients as $client)
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <a href="{{ route('clients.show', $client) }}" class="text-lime-600 ">
+                                    <a href="{{ route('clients.show', $client) }}" class="text-lime-600 uppercase">
                                         {{ $client->name }}
                                     </a>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        {{ $client->phone }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                                     {{ $client->email }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                                     {{ $client->address }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                    @if($client->contract == 1)
+                                    <i class="fa-solid fa-badge-check text-green-500 text-[1.2rem]"></i>
+                                    @else
+                                    <i class="fa-solid fa-badge text-red-500 text-[1.2rem]"></i>
+
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                                     <a href="{{ route('clients.edit', $client) }}" class="text-lime-600 mr-2">
                                         <i class="fa-solid fa-pencil"></i>
+                                    </a>
+                                    <a href="{{ route('tickets.new', $client) }}" class="text-lime-600 mr-2">
+                                        <i class="fa-solid fa-ticket"></i>
                                     </a>
                                     <a href="{{ route('interventions.new', $client) }}" class="text-lime-600 mr-2">
                                         <i class="fa-solid fa-truck-fast"></i>
@@ -88,7 +101,6 @@
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </form>
-
                                 </td>
                             </tr>
                             @endforeach

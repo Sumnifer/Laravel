@@ -7,11 +7,17 @@
             <div class="bg-white dark:bg-gray-800 overflow-visible shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <div class="flex gap-2">
-                        <a href="{{ route('clients.index') }}" class="flex items-center justify-center px-4 py-2 bg-lime-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-lime-700 focus:outline-none focus:border-lime-700 focus:ring ring-lime-300 disabled:opacity-25 transition ease-in-out duration-150">
-                            <i class="fa-solid fa-arrow-left text-[1rem]"></i>
+                        @php
+                        $previousUrl = url()->previous();
+                        @endphp
+                        <a href="{{ $previousUrl }}" class="flex items-center justify-center px-4 py-2 bg-lime-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-lime-700 focus:outline-none focus:border-lime-700 focus:ring ring-lime-300 disabled:opacity-25 transition ease-in-out duration-150">
+                            <i class="fa-solid fa-arrow-left text-[1rem] mr-1"></i>
+                            Retour
                         </a>
+
                         <a href="{{ route('dashboard') }}" class="flex items-center justify-center px-4 py-2 bg-lime-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-lime-700 focus:outline-none focus:border-lime-700 focus:ring ring-lime-300 disabled:opacity-25 transition ease-in-out duration-150">
-                            <i class="fa-solid fa-house text-[1rem]"></i>
+                            <i class="fa-solid fa-house text-[1rem] mr-1"></i>
+                            Dashboard
                         </a>
                     </div>
                     <form action="{{ route('clients.store') }}" method="POST" class="flex flex-col gap-2 items-center w-full">
@@ -45,6 +51,13 @@
                         <div class="flex flex-col items-start w-[50%]">
                             <label for="phone" class="self-start">Téléphone :</label>
                             <input type="number" name="phone" id="phone" value="{{ old('phone') }}" required class="w-full border-lime-600 focus:outline-0 focus:ring-lime-600 focus:border-lime-600">
+                        </div>
+                        <div class="flex flex-col items-start w-[50%]">
+                            <label for="contract" class="self-start">Téléphone :</label>
+                            <select name="contract" id="contract" required class="w-full border-lime-600 focus:outline-0 focus:ring-lime-600 focus:border-lime-600">
+                                <option value="0">Non</option>
+                                <option value="1">Oui</option>
+                            </select>
                         </div>
 
                         <button type="submit" class="bg-lime-600 w-[50%] self-center py-2 px-6 rounded-[10px] text-white uppercase font-bold mt-4">Créer</button>

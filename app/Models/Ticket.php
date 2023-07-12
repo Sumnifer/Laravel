@@ -14,8 +14,8 @@ class Ticket extends Model
         'created_by',
         'managed_by',
         'status',
-        'archived', // Add this line to include the 'archived' field
         'attachment',
+        'priority',
     ];
 
     public function client()

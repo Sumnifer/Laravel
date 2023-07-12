@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Intervention;
 use Illuminate\Http\Request;
 use App\Models\Ticket;
 use App\Models\User;
@@ -18,10 +19,15 @@ class TicketController extends Controller
 {
     public function index()
     {
-        $tickets = Ticket::where('archived', false)->paginate(15);
+        $tickets = Ticket::where('status', '!=', 'Archivé')
+            ->orderBy('priority', 'DESC')
+            ->orderBy('created_at', 'DESC')
+            ->paginate(10);
 
         return view('tickets.index', compact('tickets'));
     }
+
+
 
 
 
@@ -58,6 +64,7 @@ class TicketController extends Controller
             'created_by' => 'required|exists:users,id',
             'managed_by' => 'required|exists:users,id',
             'attachment' => 'nullable|file|max:2048',
+            'priority' => 'required',
         ]);
 
         $ticket = new Ticket();
@@ -66,6 +73,7 @@ class TicketController extends Controller
         $ticket->created_by = $request->created_by;
         $ticket->managed_by = $request->managed_by;
         $ticket->status = $request->status;
+        $ticket->priority = $request->priority;
 
         // Traitement de la pièce jointe s'il y en a une
         if ($request->hasFile('attachment')) {
@@ -125,6 +133,7 @@ class TicketController extends Controller
             'managed_by' => 'required|exists:users,id',
             'status' => 'required',
             'attachment' => 'nullable|file|max:2048',
+            'priority' => 'required',
         ]);
 
         $ticket = Ticket::findOrFail($id);
@@ -133,6 +142,7 @@ class TicketController extends Controller
         $ticket->created_by = $request->created_by;
         $ticket->managed_by = $request->managed_by;
         $ticket->status = $request->status;
+        $ticket->priority = $request->priority;
 
         // Traitement de la pièce jointe s'il y en a une
         if ($request->hasFile('attachment')) {
@@ -175,6 +185,8 @@ class TicketController extends Controller
     public function destroy($id)
     {
         $ticket = Ticket::findOrFail($id);
+        Intervention::where('ticket_id', $id)->delete();
+
 
         // Supprimez la pièce jointe si elle existe
         if ($ticket->attachment) {
@@ -192,7 +204,7 @@ class TicketController extends Controller
     public function archive($id)
     {
         $ticket = Ticket::findOrFail($id);
-        $ticket->update(['archived' => true]);
+        $ticket->update(['status' => 'Archivé']);
 
         session()->flash('showCancelButton', true);
         session()->flash('cancelUrl', route('tickets.unarchive', $id));
@@ -210,7 +222,7 @@ class TicketController extends Controller
     public function unarchive($id)
     {
         $ticket = Ticket::findOrFail($id);
-        $ticket->update(['archived' => false]);
+        $ticket->update(['status' => 'En Cours']);
 
         $redirectBack = redirect()->back()->with('success', "Le ticket n'est plus archivé.");
         return $redirectBack;
@@ -219,8 +231,7 @@ class TicketController extends Controller
 
     public function archived()
     {
-        $archivedTickets = Ticket::where('archived', true)->paginate(15);
-
+        $archivedTickets = Ticket::where('status', '=', 'Archivé')->paginate(15);
         return view('tickets.archived', compact('archivedTickets'));
     }
 

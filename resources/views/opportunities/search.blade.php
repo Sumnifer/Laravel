@@ -14,12 +14,6 @@
         <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 w-full">
             <div class="bg-white dark:bg-gray-800 overflow-visible shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    @if (session('success'))
-                        <div class="bg-green-200 text-green-800 py-2 px-4 mb-4 rounded">
-                            <i class="fa-solid fa-circle-check"></i>
-                            {{ session('success') }}
-                        </div>
-                    @endif
                     <div class="flex justify-between mb-6">
                         <div class="flex gap-2">
                             <details class="relative bg-red w-60">

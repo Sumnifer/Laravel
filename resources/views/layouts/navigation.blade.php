@@ -19,30 +19,61 @@
                         {{ __('Clients') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets')" class="text-lime-600 font-bold hover:text-lime-500">
+                    <x-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.index')" class="text-lime-600 font-bold hover:text-lime-500">
                         {{ __('Tickets') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('interventions.index')" :active="request()->routeIs('tickets')" class="text-lime-600 font-bold hover:text-lime-500">
+                    <x-nav-link :href="route('interventions.index')" :active="request()->routeIs('interventions.index')" class="text-lime-600 font-bold hover:text-lime-500">
                         {{ __('Interventions') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('opportunities.index')" :active="request()->routeIs('tickets')" class="text-lime-600 font-bold hover:text-lime-500">
+                    <x-nav-link :href="route('opportunities.index')" :active="request()->routeIs('opportunities.index')" class="text-lime-600 font-bold hover:text-lime-500">
                         {{ __('Opportunités') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('materials.index')" :active="request()->routeIs('tickets')" class="text-lime-600 font-bold hover:text-lime-500">
+                    <x-nav-link :href="route('materials.index')" :active="request()->routeIs('materials.index')" class="text-lime-600 font-bold hover:text-lime-500">
                         {{ __('Matériels') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets')" class="text-lime-600 font-bold hover:text-lime-500">
+                    <x-nav-link :href="route('workshop.index')" :active="request()->routeIs('workshop.index')" class="text-lime-600 font-bold hover:text-lime-500">
                         {{ __('Atelier') }}
                     </x-nav-link>
                 </div>
             </div>
+            @if (session('success'))
+                <div class="bg-green-200 text-green-800 p-6 mb-4 transition-all w-[98%] text-center rounded-lg duration-100 absolute top-1 right-1/2 translate-x-1/2 success z-10">
+                    <i class="fa-solid fa-circle-check"></i>
+                    {{ session('success') }}
+                    @if (session('showCancelButton'))
+                    <form action="{{ session('cancelUrl') }}" method="POST" class="inline">
+                        @csrf
+                        @method('PUT')
+                        <button type="submit" class="underline font-bold">
+                            Annuler
+                        </button>
+                    </form>
+                    @endif
+                </div>
+            @endif
+
+
+
+
+
+
+
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
+                <button class="cursor-pointer mr-4 relative before:content-['4'] before:absolute before:top-[-10px] before:right-[-10px] before:bg-blue-500 before:rounded-full before:w-4 before:text-[.6rem] before:aspect-square before:grid before:place-items-center before:text-white">
+                    <i class="fa-solid fa-message text-[20px] text-lime-600"></i>
+                </button>
+                <button class="cursor-pointer mr-4 relative before:content-['2'] before:absolute before:top-[-10px] before:right-[-10px] before:bg-blue-500 before:rounded-full before:w-4 before:text-[.6rem] before:aspect-square before:grid before:place-items-center before:text-white">
+                    <i class="fa-solid fa-bell text-[20px] text-lime-600"></i>
+                </button>
                 <x-dropdown align="right" width="48">
-                    <x-slot name="trigger" >
+                    <x-slot name="trigger" class="flex items-center">
+
                         <button class="px-4 py-2 bg-lime-600 text-white inline-flex items-center border border-transparent text-sm leading-4 font-medium rounded-md dark:text-gray-400 dark:bg-gray-800 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                            <div class=""><i class="fa-solid fa-user"></i> {{ Auth::user()->name }}</div>
+                            <div class="">
+                                <i class="fa-solid fa-user"></i> {{ Auth::user()->name }}
+                            </div>
 
                             <div class="ml-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">

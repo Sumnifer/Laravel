@@ -17,6 +17,7 @@ class Client extends Model
         'postalCode',
         'city',
         'phone',
+        'contract',
     ];
 
     // Définition des règles de validation pour la création et la mise à jour

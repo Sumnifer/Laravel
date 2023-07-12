@@ -7,21 +7,18 @@
             <div class="bg-white dark:bg-gray-800 overflow-visible shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <div class="flex gap-2">
-                        @if(url()->previous() == route('clients.index'))
-                        <a href="{{ route('clients.index') }}" class="flex items-center justify-center px-4 py-2 bg-lime-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-lime-700 focus:outline-none focus:border-lime-700 focus:ring ring-lime-300 disabled:opacity-25 transition ease-in-out duration-150">
-                            <i class="fa-solid fa-arrow-left text-[1rem]"></i>
+                        @php
+                        $previousUrl = url()->previous();
+                        @endphp
+                        <a href="{{ $previousUrl }}" class="flex items-center justify-center px-4 py-2 bg-lime-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-lime-700 focus:outline-none focus:border-lime-700 focus:ring ring-lime-300 disabled:opacity-25 transition ease-in-out duration-150">
+                            <i class="fa-solid fa-arrow-left text-[1rem] mr-1"></i>
+                            Retour
                         </a>
-                        @elseif(url()->previous() == route('clients.show', $client->id))
-                        <a href="{{ route('clients.show', $client->id) }}" class="flex items-center justify-center px-4 py-2 bg-lime-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-lime-700 focus:outline-none focus:border-lime-700 focus:ring ring-lime-300 disabled:opacity-25 transition ease-in-out duration-150">
-                            <i class="fa-solid fa-arrow-left text-[1rem]"></i>
+
+                        <a href="{{ route('dashboard') }}" class="flex items-center justify-center px-4 py-2 bg-lime-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-lime-700 focus:outline-none focus:border-lime-700 focus:ring ring-lime-300 disabled:opacity-25 transition ease-in-out duration-150">
+                            <i class="fa-solid fa-house text-[1rem] mr-1"></i>
+                            Dashboard
                         </a>
-                        @elseif(url()->previous() == route('interventions.search'))
-                        <a href="{{ route('interventions.search') }}" class="flex items-center justify-center px-4 py-2 bg-lime-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-lime-700 focus:outline-none focus:border-lime-700 focus:ring ring-lime-300 disabled:opacity-25 transition ease-in-out duration-150">
-                            <i class="fa-solid fa-arrow-left text-[1rem]"></i>
-                        </a>
-                        @else
-                        <!-- Autre lien ou code à afficher si la page précédente ne correspond ni à tickets.index ni à tickets.show -->
-                        @endif
                     </div>
                     <form action="{{ route('clients.update', $client->id) }}" method="POST" class="flex flex-col gap-2 items-center w-full">
                         @csrf
@@ -55,6 +52,13 @@
                         <div class="flex flex-col items-start w-[50%]">
                             <label for="phone" class="self-start">Téléphone :</label>
                             <input type="number" name="phone" id="phone" value="{{ $client->phone }}" required class="w-full border-lime-600 focus:outline-0 focus:ring-lime-600 focus:border-lime-600">
+                        </div>
+                        <div class="flex flex-col items-start w-[50%]">
+                            <label for="contract" class="self-start">Contrat :</label>
+                            <select name="contract" id="contract" required class="w-full border-lime-600 focus:outline-0 focus:ring-lime-600 focus:border-lime-600">
+                                <option value="0" @if($client->contract == 0) selected @endif>Non</option>
+                                <option value="1" @if($client->contract == 1) selected @endif>Oui</option>
+                            </select>
                         </div>
 
                         <button type="submit" class="bg-lime-600 w-[50%] self-center py-2 px-6 rounded-[10px] text-white uppercase font-bold mt-4">Modifier</button>

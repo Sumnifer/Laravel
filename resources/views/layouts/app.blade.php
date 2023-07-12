@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
+    <head class="relative">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -10,7 +10,9 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <!-- CSS de Font Awesome -->
+        <link rel="stylesheet" href="{{ asset('css/FontAwesome.css') }}">
+
 
 
         <!-- Scripts -->
@@ -34,5 +36,39 @@
                 {{ $slot }}
             </main>
         </div>
+        <script>
+            // Attendre que le document soit prêt
+            document.addEventListener("DOMContentLoaded", function() {
+                // Récupérer l'élément avec la classe .success
+                var successElement = document.querySelector('.success');
+                var errorElement = document.querySelector('.error');
+
+                // Vérifier si l'élément existe
+                if (successElement) {
+                    // Définir un délai de 5 secondes avant de modifier l'opacité
+                    setTimeout(function() {
+                        successElement.style.opacity = 0;
+                    }, 2000); // 5000 millisecondes = 5 secondes
+
+                    // Définir un délai supplémentaire de 7 secondes avant d'ajouter display: none
+                    setTimeout(function() {
+                        successElement.style.display = 'none';
+                    }, 4000); // 7000 millisecondes = 7 secondes
+                }
+                if (errorElement) {
+                    // Définir un délai de 5 secondes avant de modifier l'opacité
+                    setTimeout(function() {
+                        successElement.style.opacity = 0;
+                    }, 5000); // 5000 millisecondes = 5 secondes
+
+                    // Définir un délai supplémentaire de 7 secondes avant d'ajouter display: none
+                    setTimeout(function() {
+                        successElement.style.display = 'none';
+                    }, 7000); // 7000 millisecondes = 7 secondes
+                }
+            });
+        </script>
+
+
     </body>
 </html>

@@ -1,18 +1,41 @@
 <x-app-layout>
     <div class="py-6 flex flex-col items-center w-full">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight text-center mb-6 text-lime-600 uppercase font-bold">
+        @if($client->contract == 0)
+        <h2 class="font-semibold text-xl text-white leading-tight text-center mb-6 bg-red-500 uppercase font-bold w-[80%] rounded-[10px] p-4">
             {{$client->name}}
         </h2>
+        @else
+        <h2 class="font-semibold text-xl text-white leading-tight text-center mb-6 bg-green-600 uppercase font-bold w-[80%] rounded-[10px] p-4">
+            {{$client->name}}
+        </h2>
+        @endif
         <div class="max-w-7xl mx-auto bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg w-full">
             <div class="px-4 py-5 sm:px-6 flex justify-between">
-                <a href="{{ route('clients.index') }}" class="inline-flex items-center px-4 py-2 bg-lime-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-lime-700 focus:outline-none focus:border-lime-700 focus:ring ring-lime-300 disabled:opacity-25 transition ease-in-out duration-150">
-                    <i class="fa-solid fa-arrow-left mr-1"></i>
-                    Retour
-                </a>
                 <div class="flex gap-2">
+                    @php
+                    $previousUrl = url()->previous();
+                    @endphp
+                    <a href="{{ $previousUrl }}" class="flex items-center justify-center px-4 py-2 bg-lime-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-lime-700 focus:outline-none focus:border-lime-700 focus:ring ring-lime-300 disabled:opacity-25 transition ease-in-out duration-150">
+                        <i class="fa-solid fa-arrow-left text-[1rem] mr-1"></i>
+                        Retour
+                    </a>
+
+                    <a href="{{ route('dashboard') }}" class="flex items-center justify-center px-4 py-2 bg-lime-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-lime-700 focus:outline-none focus:border-lime-700 focus:ring ring-lime-300 disabled:opacity-25 transition ease-in-out duration-150">
+                        <i class="fa-solid fa-house text-[1rem] mr-1"></i>
+                        Dashboard
+                    </a>
+                </div>
+                <div class="flex gap-2">
+                    @if($client->contract == 1)
                     <a href="{{ route('tickets.new', $client)}}" class="inline-flex items-center px-4 py-2 bg-lime-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-lime-700 focus:outline-none focus:border-lime-700 focus:ring ring-lime-300 disabled:opacity-25 transition ease-in-out duration-150">
                         <i class="fa-solid fa-ticket mr-1"></i>
                         Ticket
+                        <i class="fa-solid fa-plus ml-2"></i>
+                    </a>
+                    @endif
+                    <a href="{{ route('opportunities.new', $client)}}" class="inline-flex items-center px-4 py-2 bg-lime-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-lime-700 focus:outline-none focus:border-lime-700 focus:ring ring-lime-300 disabled:opacity-25 transition ease-in-out duration-150">
+                        <i class="fa-solid fa-handshake mr-1"></i>
+                        Opportunité
                         <i class="fa-solid fa-plus ml-2"></i>
                     </a>
                     <a href="{{ route('interventions.new', $client) }}" class="flex items-center justify-center px-4 py-2 bg-lime-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-lime-700 focus:outline-none focus:border-lime-700 focus:ring ring-lime-300 disabled:opacity-25 transition ease-in-out duration-150">
@@ -20,12 +43,6 @@
                         Intervention
                         <i class="fa-solid fa-plus ml-2"></i>
 
-                    </a>
-
-                    <a href="{{ route('opportunities.new', $client)}}" class="inline-flex items-center px-4 py-2 bg-lime-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-lime-700 focus:outline-none focus:border-lime-700 focus:ring ring-lime-300 disabled:opacity-25 transition ease-in-out duration-150">
-                        <i class="fa-solid fa-handshake mr-1"></i>
-                        Opportunité
-                        <i class="fa-solid fa-plus ml-2"></i>
                     </a>
                     <a href="{{ route('clients.edit', $client->id)}}" class="inline-flex items-center px-4 py-2 bg-lime-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-lime-700 focus:outline-none focus:border-lime-700 focus:ring ring-lime-300 disabled:opacity-25 transition ease-in-out duration-150">
                         <i class="fa-solid fa-pen-to-square mr-1"></i>
@@ -88,6 +105,7 @@
                     </div>
                 </dl>
             </div>
+            @if($client->contract == 1)
             <div class="max-w-7xl mx-auto bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg w-full mt-6">
                 <div class="px-4 py-5 sm:px-6 flex justify-center">
                     <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200 uppercase">Tickets du client</h3>
@@ -120,7 +138,7 @@
                     </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach ($client->tickets as $ticket)
+                        @foreach ($tickets as $ticket)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 uppercase">
                                 <a href="{{ route('tickets.show', $ticket->id)}}" class="text-lime-600">
@@ -171,7 +189,11 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="flex justify-center items-center w-full mt-6">
+                    {{ $tickets->links() }}
+                </div>
             </div>
+            @endif
         </div>
 
     </div>

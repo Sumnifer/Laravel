@@ -6,21 +6,16 @@
             </h2>
             <form action="{{ route('interventions.search') }}" method="GET" class="flex items-center mb-4 w-full max-w-5xl flex justify-center">
                 <div class="w-full flex items-center justify-center">
-                    <input type="text" name="search" placeholder="Rechercher un client..." class="border-lime-600 focus:outline-0 focus:ring-lime-600 focus:border-lime-600 px-4 py-2 rounded-l-md w-full">
+                    <input type="text" name="search" id="search-input" placeholder="Rechercher un client..." class="border-lime-600 focus:outline-0 focus:ring-lime-600 focus:border-lime-600 px-4 py-2 rounded-l-md w-full">
+                    <datalist id="clients-list"></datalist>
                     <button type="submit" class="h-full bg-lime-600 text-white px-4 py-2 rounded-r-md border-lime-600 border-[1px]"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </div>
+
             </form>
         </div>
         <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 w-full">
             <div class="bg-white dark:bg-gray-800 overflow-visible shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    @if (session('success'))
-                        <div class="bg-green-200 text-green-800 py-2 px-4 mb-4 rounded">
-                            <i class="fa-solid fa-circle-check"></i>
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
                     <div class="flex justify-between mb-6">
                         <div class="flex gap-2">
                             <details class="relative bg-red w-60">
@@ -102,3 +97,41 @@
         </div>
     </div>
 </x-app-layout>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Événement "input" pour l'input de recherche
+    document.querySelector('#search-input').addEventListener('input', function() {
+        // Récupérer la valeur de l'input de recherche
+        var searchTerm = this.value;
+
+        // Effectuer la requête AJAX vers la route interventions.search
+        fetch('/interventions/search?q=' + searchTerm)
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                // Réinitialiser la liste des clients dans l'élément datalist
+                var clientsList = document.querySelector('#clients-list');
+                clientsList.innerHTML = '';
+
+                // Ajouter chaque client à la liste
+                data.forEach(function(client) {
+                    var option = document.createElement('option');
+                    option.value = client.name;
+                    clientsList.appendChild(option);
+                });
+            })
+            .catch(function(error) {
+                console.error('Une erreur s\'est produite:', error);
+            });
+    });
+</script>
+
+
+
+
+
+
+
+
+

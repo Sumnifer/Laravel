@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Routing\ResponseFactory;
 
 class InterventionController extends Controller
 {
@@ -15,23 +16,28 @@ public function index()
 {
 $interventions = Intervention::paginate(15);
 $users = User::all();
-return view('interventions.index', compact('interventions', 'users'));
+$clients = Client::all();
+return view('interventions.index', compact('interventions', 'users', 'clients'));
 }
 
 public function create(){
 return view('interventions.search');
 }
 
-public function search(Request $request){
-    $search = $request->input('search');
-    if ($search) {
-        $clients = Client::where('name', 'like', '%' . $search . '%')->get();
-    } else {
-        // Afficher tous les clients par défaut
-        $clients = Client::all();
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+        if ($search) {
+            $clients = Client::where('name', 'like', '%' . $search . '%')->get();
+        } else {
+            // Afficher tous les clients par défaut
+            $clients = Client::all();
+        }
+
+        return view('interventions.search', compact('clients'));
     }
-    return view('interventions.search', compact('clients'));
-}
+
+
 
     public function new($client)
     {
@@ -85,41 +91,49 @@ public function search(Request $request){
 
 
     public function edit($id)
-{
-$intervention = Intervention::findOrFail($id);
-return view('interventions.edit', compact('intervention'));
-}
+        {
+        $intervention = Intervention::findOrFail($id);
+        $clients = Client::all();
+        $users = User::all();
+        $tickets = Ticket::all();
+        return view('interventions.edit', compact('intervention', 'clients', 'tickets', 'users'));
+        }
 
-public function update(Request $request, $id)
-{
-$validatedData = $request->validate([
-'user_id' => 'required',
-'managed_by' => 'required',
-'client_id' => 'required',
-'ticket_id' => 'required',
-'materiel_id' => 'nullable',
-'description' => 'required',
-'status' => 'required',
-'hours' => 'required',
-]);
+    public function update(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+        'user_id' => 'required',
+        'managed_by' => 'required',
+        'client_id' => 'required',
+        'ticket_id' => 'required',
+        'materiel_id' => 'nullable',
+        'description' => 'required',
+        'status' => 'required',
+        'hours' => 'required',
+        ]);
 
-$intervention = Intervention::findOrFail($id);
-$intervention->update($validatedData);
+        $intervention = Intervention::findOrFail($id);
+        $intervention->update($validatedData);
 
-return redirect()->route('interventions.index');
-}
+        return redirect()->route('interventions.index');
+    }
 
-public function delete($id)
-{
-$intervention = Intervention::findOrFail($id);
-$intervention->delete();
+    public function delete($id)
+    {
+        $intervention = Intervention::findOrFail($id);
+        $intervention->delete();
 
-return redirect()->route('interventions.index');
-}
+        return redirect()->route('interventions.index');
+    }
 
-public function show($id)
-{
-$intervention = Intervention::findOrFail($id);
-return view('interventions.show', compact('intervention'));
-}
+    public function show($id)
+    {
+        $intervention = Intervention::findOrFail($id);
+        return view('interventions.show', compact('intervention'));
+    }
+
+
+
+
+
 }

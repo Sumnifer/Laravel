@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\Intervention;
+use App\Models\Opportunity;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Ticket;
 use Illuminate\Support\Facades\Storage;
+use PDF;
 
 
 
@@ -48,6 +51,7 @@ class ClientController extends Controller
             'postalCode' => 'required|numeric',
             'city' => 'required|max:255',
             'phone' => 'required|numeric',
+            'contract' => 'required'
         ]);
 
         $client = Client::create($validatedData);
@@ -62,10 +66,11 @@ class ClientController extends Controller
     public function show($id)
     {
         $client = Client::findOrFail($id);
+        $tickets = Ticket::where('client_id', $id)->paginate(10);
 
-
-        return view('clients.show', compact('client'));
+        return view('clients.show', compact('client', 'tickets'));
     }
+
 
 
 
@@ -98,6 +103,7 @@ class ClientController extends Controller
             'postalCode' => 'required|numeric',
             'city' => 'required',
             'phone' => 'required|numeric',
+            'contract' => 'required'
         ]);
 
         $client->update($validatedData);
@@ -113,6 +119,10 @@ class ClientController extends Controller
      */
     public function destroy(Client $client)
     {
+        Ticket::where('client_id', $client)->delete();
+        Intervention::where('client_id', $client)->delete();
+        Opportunity::where('client_id', $client)->delete();
+
 
         $client->delete();
         Log::channel('custom')->info('Modification : '.auth()->user()->name.' a Supprimé le client N°'.$client->id.' ('.$client->name.')');
@@ -124,4 +134,19 @@ class ClientController extends Controller
     }
 
 
+
+    public function generatePDF()
+    {
+        $data = [
+            'title' => 'Mon PDF',
+            'content' => 'Contenu du PDF'
+        ];
+
+        $pdf = PDF::loadView('pdf.template', $data);
+
+        return $pdf->stream('document.pdf');
+    }
+
+
 }
+

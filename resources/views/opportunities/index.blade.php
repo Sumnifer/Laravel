@@ -8,22 +8,6 @@
         <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 w-full">
             <div class="bg-white dark:bg-gray-800 overflow-visible shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    @if (session('success'))
-                    <div class="bg-green-200 text-green-800 py-2 px-4 mb-4 rounded">
-                        <i class="fa-solid fa-circle-check"></i>
-                        {{ session('success') }}
-                        @if (session('showCancelButton'))
-                        <form action="{{ session('cancelUrl') }}" method="POST" class="inline">
-                            @csrf
-                            @method('PUT')
-                            <button type="submit" class="underline font-bold">
-                                Annuler
-                            </button>
-                        </form>
-                        @endif
-                    </div>
-                    @endif
-
                     <div class="flex justify-between mb-6">
                         <div class="flex gap-2">
                             <details class="relative bg-red w-60 ">
@@ -51,18 +35,19 @@
                             <thead class="bg-gray-50 dark:bg-gray-900">
                             <tr>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Nom du Client
+                                    Dâte
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    ID
+                                    Nom du Client
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Description
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Status
-                                </th><th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Crée par
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Responsable
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Actions
@@ -71,23 +56,33 @@
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                             @foreach ($opportunities as $opportunity)
-                            <tr class="">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <a href="{{ route('opportunities.show', $opportunity) }}" class="text-lime-600 ">
-                                        {{ $opportunity->client->name }}
+                                @if($opportunity->status == 'denied')
+                                <tr class="border-l-4 !border-l-red-500 !border-b-0 relative">
+                                    @elseif($opportunity->status == 'accepted')
+                                <tr class="border-l-4 !border-l-blue-500 !border-b-0 relative">
+                                    @elseif($opportunity->status == 'solved')
+                                <tr class="border-l-4 !border-l-green-500  !border-b-0 relative">
+                                    @else
+                                <tr class="">
+                                    @endif
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <a href="{{ route('opportunities.show', $opportunity) }}" class="text-lime-600 uppercase">
+                                        {{ $opportunity->created_at->format('d-m-Y') }}
                                     </a>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $opportunity->id }}
+                                    <a href="{{ route('clients.show', $opportunity->client_id) }}" class="uppercase">
+                                        {{ $opportunity->client->name }}
+                                    </a>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {{ $opportunity->description }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $opportunity->status }}
+                                    {{ $opportunity->createdBy->name }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $opportunity->createdBy->name }}
+                                    {{ $opportunity->managedBy->name }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex gap-2">
                                     <a href="{{ route('opportunities.edit', $opportunity) }}" class="text-lime-600">
